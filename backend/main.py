@@ -6,12 +6,16 @@ Main entry point for the kitchen simulator service.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from api import knowledge
 
 app = FastAPI(
     title="Kitchen Simulator API",
     description="Restaurant service flow simulator with agent orchestration",
     version="0.1.0"
 )
+
+# Include routers
+app.include_router(knowledge.router)
 
 # CORS middleware for React frontend
 app.add_middleware(
