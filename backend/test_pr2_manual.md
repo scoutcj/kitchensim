@@ -66,7 +66,7 @@ curl http://localhost:8000/api/knowledge/kitchen | jq '.ovens[0]'
 
 ```bash
 # Reset to home kitchen
-curl -X POST http://localhost:8000/api/knowledge/kitchen/reset?kitchen_type=home
+curl -X POST "http://localhost:8000/api/knowledge/kitchen/reset?kitchen_type=home"
 ```
 
 **Expected:** Response shows home kitchen config (1 oven, 4 burners, 1 microwave, 1 chef)
@@ -76,10 +76,10 @@ curl -X POST http://localhost:8000/api/knowledge/kitchen/reset?kitchen_type=home
 
 ```bash
 # Test home
-curl -X POST http://localhost:8000/api/knowledge/kitchen/reset?kitchen_type=home
+curl -X POST "http://localhost:8000/api/knowledge/kitchen/reset?kitchen_type=home"
 
 # Test commercial
-curl -X POST http://localhost:8000/api/knowledge/kitchen/reset?kitchen_type=commercial
+curl -X POST "http://localhost:8000/api/knowledge/kitchen/reset?kitchen_type=commercial"
 ```
 
 **Expected:** Each type returns correct resource counts
