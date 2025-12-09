@@ -44,10 +44,10 @@ class KitchenSimulatorState(TypedDict):
    - **Does:** Merges user overrides into knowledge_base
    - **Output:** Updates `state.knowledge_base` with user-specified values
    - **Note:** Knowledge base contains ONLY static kitchen info:
-     - Kitchen layout (ovens, stoves, prep stations count)
-     - Staff configuration (chef count, skill levels, roles)
-     - Equipment specs (oven capacity, stove burners)
-     - Default multipliers (tiredness = 1.3x, etc.)
+     - Kitchen layout (microwaves, ovens, stoves/burners - individual resources with IDs)
+     - Staff configuration (chefs, prep chefs, cook chefs, servers - individual with IDs)
+     - Equipment specs (oven capacity, stove burners, microwave capacity)
+     - Multipliers (skill level, ability, energy level - applied task-selectively)
      - **NOT task timing** (that comes from recipes)
    - **Example:** User says "I have 3 ovens" → knowledge_base.oven_count = 3
 
@@ -217,12 +217,14 @@ We'll implement Phase 1 in 11 focused PRs, working step-by-step:
 - Topological sort
 - Resource allocation algorithm
 - Timeline calculation
+- **Buffer time:** Add buffer time between tasks and service windows when estimating completion
+- **Service windows:** Consider service start/end times when scheduling
 - Wire into `schedule_node`
 
 **Files:**
 - `backend/scheduler/algorithm.py`
 
-**Test:** DAG + resources → schedule with start/end times, resource assignments
+**Test:** DAG + resources → schedule with start/end times, resource assignments, buffer times included
 
 ---
 
@@ -243,6 +245,8 @@ We'll implement Phase 1 in 11 focused PRs, working step-by-step:
 ### PR 9: Output Formatter
 **Goal:** Human-readable timeline
 - Text formatter
+- Include buffer times and service windows in output
+- Show estimated completion times with buffers
 - Wire into `format_output_node`
 - API endpoint returns formatted output
 
@@ -250,7 +254,7 @@ We'll implement Phase 1 in 11 focused PRs, working step-by-step:
 - `backend/formatters/timeline.py`
 - Update `backend/main.py` with `/api/simulate`
 
-**Test:** Schedule → readable text timeline
+**Test:** Schedule → readable text timeline with buffer times and service windows clearly indicated
 
 ---
 
@@ -304,35 +308,32 @@ We'll implement Phase 1 in 11 focused PRs, working step-by-step:
 
 ### Step 2: Knowledge Base System
 1. Create default knowledge base
-   - `backend/knowledge_base/defaults.json` with static kitchen info:
-     ```json
-     {
-       "kitchen_layout": {
-         "oven_count": 2,
-         "stove_burner_count": 4,
-         "prep_station_count": 2,
-         "plating_station_count": 1
-       },
-       "staff": {
-         "chef_count": 2,
-         "prep_chef_count": 1,
-         "cook_chef_count": 1,
-         "skill_levels": {"default": "intermediate"}
-       },
-       "multipliers": {
-         "tiredness_multiplier": 1.3,
-         "inexperience_multiplier": 1.5
-       }
-     }
-     ```
+   - `backend/knowledge_base/defaults.json` with static kitchen info
+   - **Resources tracked:** Microwaves (with wattage), Ovens (with max_temp, capacity), Burners (with type, individual not grouped as Stove)
+   - **Staff tracked:** Chefs, Prep Chefs, Cook Chefs, Servers (individual with IDs)
+   - **Multipliers:** Skill level, Ability, Energy level (applied task-selectively, not globally)
+   - **Default kitchen configurations:**
+     - **Home:** 1 oven, 4 burners, 1 microwave, 1 chef
+     - **Small Restaurant:** 2 ovens, 6 burners, 2 microwaves, 2 chefs
+     - **Commercial:** 4 ovens, 8 burners, 5 microwaves, 5 chefs
    - **Important:** Knowledge base contains ONLY static kitchen configuration
    - **NOT task timing** (that comes from recipe analysis)
+   - **Structure:** Pydantic models (Oven, Burner, Microwave, Chef classes) for type safety
+   - **Session-scoped for MVP:** Each simulation gets a Kitchen instance, structure supports future DB persistence
 
 2. Create `KnowledgeBase` class
    - Load defaults from JSON
    - Merge user overrides (from LLM extraction in parse_input_node)
    - Provide lookup methods for resources, staff, multipliers
-   - Example: User says "I have 3 ovens" → updates oven_count = 3
+   - Track individual resources with IDs (e.g., "oven_1", "chef_1")
+   - Example: User says "I have 3 ovens" → creates 3 Oven instances with IDs
+
+3. **Multiplier Application (Task-Selective)**
+   - Multipliers are NOT global - they apply differently based on task type
+   - Energy level affects prep tasks (chopping, peeling) more than passive tasks (boiling)
+   - Skill level affects complex cooking tasks more than simple prep
+   - Example: Tired chef → "chop onions" gets 1.3x multiplier, "boil pasta" gets 1.05x (mostly passive)
+   - Implementation: `Chef.get_task_multiplier(task_type: str) -> float`
 
 ### Step 3: LangGraph State & Nodes
 1. Define state schema (Pydantic models)
@@ -768,4 +769,19 @@ We only have 2 ovens. Service starts at 6pm, prep can start at 2pm."
 - Add Monte Carlo simulation
 - Add resource utilization views
 - Enhance knowledge base with RAG
+
+## Future Phases (Post-MVP)
+
+### Multi-Kitchen Support
+- Support for multiple people working on the same base kitchen configuration
+- Shared resource pools across kitchen instances
+- Coordination between multiple kitchen simulations
+- **Note for current implementation:** Structure knowledge base to support future multi-kitchen scenarios, but keep MVP session-scoped
+
+### User Profiles & Persistence
+- Database integration (SQLite → PostgreSQL)
+- User authentication
+- Saved kitchen profiles ("My Home Kitchen", "Restaurant A", etc.)
+- Historical data (what schedules worked before)
+- **Note for current implementation:** Use Pydantic models that can easily serialize to DB schemas later
 

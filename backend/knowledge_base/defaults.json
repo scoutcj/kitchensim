@@ -1,0 +1,223 @@
+{
+  "kitchen_types": {
+    "home": {
+      "ovens": [
+        {
+          "id": "oven_1",
+          "capacity": 2,
+          "max_temp": 500
+        }
+      ],
+      "burners": [
+        {
+          "id": "burner_1",
+          "type": "gas"
+        },
+        {
+          "id": "burner_2",
+          "type": "gas"
+        },
+        {
+          "id": "burner_3",
+          "type": "electric"
+        },
+        {
+          "id": "burner_4",
+          "type": "electric"
+        }
+      ],
+      "microwaves": [
+        {
+          "id": "microwave_1",
+          "wattage": 1000
+        }
+      ],
+      "chefs": [
+        {
+          "id": "chef_1",
+          "role": "general",
+          "skill_level": "intermediate",
+          "energy_level": "fresh"
+        }
+      ]
+    },
+    "small_restaurant": {
+      "ovens": [
+        {
+          "id": "oven_1",
+          "capacity": 3,
+          "max_temp": 550
+        },
+        {
+          "id": "oven_2",
+          "capacity": 3,
+          "max_temp": 550
+        }
+      ],
+      "burners": [
+        {
+          "id": "burner_1",
+          "type": "gas"
+        },
+        {
+          "id": "burner_2",
+          "type": "gas"
+        },
+        {
+          "id": "burner_3",
+          "type": "gas"
+        },
+        {
+          "id": "burner_4",
+          "type": "electric"
+        },
+        {
+          "id": "burner_5",
+          "type": "electric"
+        },
+        {
+          "id": "burner_6",
+          "type": "induction"
+        }
+      ],
+      "microwaves": [
+        {
+          "id": "microwave_1",
+          "wattage": 1200
+        },
+        {
+          "id": "microwave_2",
+          "wattage": 1000
+        }
+      ],
+      "chefs": [
+        {
+          "id": "chef_1",
+          "role": "prep",
+          "skill_level": "intermediate",
+          "energy_level": "fresh"
+        },
+        {
+          "id": "chef_2",
+          "role": "cook",
+          "skill_level": "intermediate",
+          "energy_level": "fresh"
+        }
+      ]
+    },
+    "commercial": {
+      "ovens": [
+        {
+          "id": "oven_1",
+          "capacity": 4,
+          "max_temp": 600
+        },
+        {
+          "id": "oven_2",
+          "capacity": 4,
+          "max_temp": 600
+        },
+        {
+          "id": "oven_3",
+          "capacity": 4,
+          "max_temp": 600
+        },
+        {
+          "id": "oven_4",
+          "capacity": 4,
+          "max_temp": 600
+        }
+      ],
+      "burners": [
+        {
+          "id": "burner_1",
+          "type": "gas"
+        },
+        {
+          "id": "burner_2",
+          "type": "gas"
+        },
+        {
+          "id": "burner_3",
+          "type": "gas"
+        },
+        {
+          "id": "burner_4",
+          "type": "gas"
+        },
+        {
+          "id": "burner_5",
+          "type": "induction"
+        },
+        {
+          "id": "burner_6",
+          "type": "induction"
+        },
+        {
+          "id": "burner_7",
+          "type": "electric"
+        },
+        {
+          "id": "burner_8",
+          "type": "electric"
+        }
+      ],
+      "microwaves": [
+        {
+          "id": "microwave_1",
+          "wattage": 1500
+        },
+        {
+          "id": "microwave_2",
+          "wattage": 1500
+        },
+        {
+          "id": "microwave_3",
+          "wattage": 1200
+        },
+        {
+          "id": "microwave_4",
+          "wattage": 1200
+        },
+        {
+          "id": "microwave_5",
+          "wattage": 1000
+        }
+      ],
+      "chefs": [
+        {
+          "id": "chef_1",
+          "role": "prep",
+          "skill_level": "expert",
+          "energy_level": "fresh"
+        },
+        {
+          "id": "chef_2",
+          "role": "prep",
+          "skill_level": "intermediate",
+          "energy_level": "fresh"
+        },
+        {
+          "id": "chef_3",
+          "role": "cook",
+          "skill_level": "expert",
+          "energy_level": "fresh"
+        },
+        {
+          "id": "chef_4",
+          "role": "cook",
+          "skill_level": "intermediate",
+          "energy_level": "fresh"
+        },
+        {
+          "id": "chef_5",
+          "role": "general",
+          "skill_level": "intermediate",
+          "energy_level": "fresh"
+        }
+      ]
+    }
+  },
+  "default_kitchen_type": "small_restaurant"
+}
+
