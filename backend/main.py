@@ -6,7 +6,7 @@ Main entry point for the kitchen simulator service.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from api import knowledge
+from api import knowledge, simulate
 
 app = FastAPI(
     title="Kitchen Simulator API",
@@ -16,6 +16,7 @@ app = FastAPI(
 
 # Include routers
 app.include_router(knowledge.router)
+app.include_router(simulate.router)
 
 # CORS middleware for React frontend
 app.add_middleware(
@@ -47,5 +48,5 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)
 
